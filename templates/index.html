@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f3f4f6;
+            background-image: linear-gradient(180deg, #f3f4f6 0%, #e1e5ea 100%);
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+        .form-input {
+            border-color: #d1d5db;
+            transition: border-color 0.3s ease;
+        }
+        .form-input:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+            outline: none;
+        }
+        .btn-shorten {
+            background-color: #6366f1;
+            border-radius: 10px;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        .btn-shorten:hover {
+            background-color: #4f52d9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1 class="text-2xl font-bold mb-4 text-center">URL Shortener</h1>
+            <form id="urlForm" class="space-y-4">
+                <div>
+                    <label for="original_url" class="block text-sm font-medium text-gray-700">Enter URL:</label>
+                    <input type="url" id="original_url" name="original_url" required class="form-input mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn-shorten inline-block px-4 py-2 text-sm font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Shorten</button>
+                </div>
+            </form>
+            <p id="shortened_url" class="mt-4 text-center text-sm text-gray-600"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('urlForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const original_url = document.getElementById('original_url').value;
+            const response = await fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ original_url })
+            });
+            const data = await response.json();
+            document.getElementById('shortened_url').innerText = `Shortened URL: ${window.location.origin}/${data.short_url}`;
+        });
+    </script>
+</body>
+</html>
